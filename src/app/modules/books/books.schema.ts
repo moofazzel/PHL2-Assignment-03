@@ -1,0 +1,85 @@
+import mongoose, { Schema } from "mongoose";
+import { bookGenres } from "./books.constant";
+import { IBookDocument, IBookModel } from "./books.interface";
+
+const bookSchema = new Schema<IBookDocument, IBookModel>(
+  {
+    title: {
+      type: String,
+      required: [true, "Title is required"],
+      trim: true,
+      maxlength: [200, "Title cannot exceed 200 characters"],
+    },
+    author: {
+      type: String,
+      required: [true, "Author is required"],
+      trim: true,
+      maxlength: [100, "Author name cannot exceed 100 characters"],
+    },
+    genre: {
+      type: String,
+      required: [true, "Genre is required"],
+      enum: {
+        values: bookGenres,
+        message:
+          "Genre must be one of: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY",
+      },
+    },
+    isbn: {
+      type: String,
+      required: [true, "ISBN is required"],
+      unique: true,
+      trim: true,
+      validate: {
+        validator: function (v: string) {
+          return /^(?:\d{10}|\d{13})$/.test(v.replace(/[-\s]/g, ""));
+        },
+        message: "ISBN must be a valid 10 or 13 digit number",
+      },
+    },
+    description: {
+      type: String,
+      trim: true,
+      maxlength: [1000, "Description cannot exceed 1000 characters"],
+    },
+    copies: {
+      type: Number,
+      required: [true, "Copies is required"],
+      min: [0, "Copies must be a positive number"],
+      validate: {
+        validator: Number.isInteger,
+        message: "Copies must be an integer",
+      },
+    },
+    available: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+bookSchema.methods.updateAvailability = async function (): Promise<void> {
+  this.available = this.copies > 0;
+  await this.save();
+};
+
+bookSchema.statics.findByGenre = function (
+  genre: string
+): Promise<IBookDocument[]> {
+  return this.find({ genre });
+};
+
+bookSchema.pre("save", function (next) {
+  if (this.isModified("copies")) {
+    this.available = this.copies > 0;
+  }
+  next();
+});
+
+export const Book = mongoose.model<IBookDocument, IBookModel>(
+  "Book",
+  bookSchema
+);
