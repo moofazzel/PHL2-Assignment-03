@@ -6,8 +6,8 @@ const pathNotFoundErrorHandler = (
   next: NextFunction
 ) => {
   res.status(404).json({
-    success: false,
     message: "Not Found",
+    success: false,
     error: {
       path: req.originalUrl,
       message: "API endpoint not found",

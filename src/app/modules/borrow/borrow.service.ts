@@ -4,8 +4,24 @@ import { Borrow } from "./borrow.schema";
 
 const borrowBook = async (borrowData: IBorrow): Promise<IBorrowDocument> => {
   const book = await Book.findById(borrowData.book);
-  if (!book || book.copies < borrowData.quantity) {
-    throw new Error("Book not available or not enough copies");
+  if (!book) {
+    const error = new Error("Book not found");
+    (error as any).name = "BookNotFoundError";
+    (error as any).statusCode = 404;
+    throw error;
+  }
+
+  if (book.copies < borrowData.quantity) {
+    const error = new Error(
+      `Not enough copies available. Available: ${book.copies}, Requested: ${borrowData.quantity}`
+    );
+    (error as any).name = "InsufficientCopiesError";
+    (error as any).statusCode = 400;
+    (error as any).details = {
+      available: book.copies,
+      requested: borrowData.quantity,
+    };
+    throw error;
   }
 
   const result = await Borrow.create(borrowData);

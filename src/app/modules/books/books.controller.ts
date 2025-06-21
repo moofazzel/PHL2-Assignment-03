@@ -11,9 +11,14 @@ const createBook = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     return res.status(400).json({
+      message: "Validation failed",
       success: false,
-      message: error.message || "Failed to create book",
-      error: error,
+      error: {
+        name: error.name || "ValidationError",
+        message: error.message,
+        details: error.errors || {},
+        statusCode: 400,
+      },
     });
   }
 };
@@ -28,9 +33,14 @@ const getAllBooks = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     return res.status(500).json({
+      message: "Failed to retrieve books",
       success: false,
-      message: error.message || "Failed to retrieve books",
-      error: error,
+      error: {
+        name: error.name || "RetrieveError",
+        message: error.message,
+        details: error.details || {},
+        statusCode: 500,
+      },
     });
   }
 };
@@ -39,9 +49,16 @@ const getBookById = async (req: Request, res: Response) => {
   try {
     const book = await BookService.getBookById(req.params.bookId);
     if (!book) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Book not found" });
+      return res.status(404).json({
+        message: "Book not found",
+        success: false,
+        error: {
+          name: "BookNotFoundError",
+          message: "Book not found",
+          details: { bookId: req.params.bookId },
+          statusCode: 404,
+        },
+      });
     }
     return res.status(200).json({
       success: true,
@@ -50,9 +67,14 @@ const getBookById = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     return res.status(500).json({
+      message: "Failed to retrieve book",
       success: false,
-      message: error.message || "Failed to retrieve book",
-      error: error,
+      error: {
+        name: error.name || "RetrieveError",
+        message: error.message,
+        details: error.details || {},
+        statusCode: 500,
+      },
     });
   }
 };
@@ -61,9 +83,16 @@ const updateBook = async (req: Request, res: Response) => {
   try {
     const book = await BookService.updateBook(req.params.bookId, req.body);
     if (!book) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Book not found" });
+      return res.status(404).json({
+        message: "Book not found",
+        success: false,
+        error: {
+          name: "BookNotFoundError",
+          message: "Book not found",
+          details: { bookId: req.params.bookId },
+          statusCode: 404,
+        },
+      });
     }
     return res.status(200).json({
       success: true,
@@ -72,9 +101,14 @@ const updateBook = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     return res.status(400).json({
+      message: "Validation failed",
       success: false,
-      message: error.message || "Failed to update book",
-      error: error,
+      error: {
+        name: error.name || "ValidationError",
+        message: error.message,
+        details: error.errors || {},
+        statusCode: 400,
+      },
     });
   }
 };
@@ -83,9 +117,16 @@ const deleteBook = async (req: Request, res: Response) => {
   try {
     const book = await BookService.deleteBook(req.params.bookId);
     if (!book) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Book not found" });
+      return res.status(404).json({
+        message: "Book not found",
+        success: false,
+        error: {
+          name: "BookNotFoundError",
+          message: "Book not found",
+          details: { bookId: req.params.bookId },
+          statusCode: 404,
+        },
+      });
     }
     return res.status(200).json({
       success: true,
@@ -94,9 +135,14 @@ const deleteBook = async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     return res.status(500).json({
+      message: "Failed to delete book",
       success: false,
-      message: error.message || "Failed to delete book",
-      error: error,
+      error: {
+        name: error.name || "DeleteError",
+        message: error.message,
+        details: error.details || {},
+        statusCode: 500,
+      },
     });
   }
 };
