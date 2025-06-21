@@ -32,6 +32,27 @@ const updateBook = async (
   bookId: string,
   updateData: Partial<IBook>
 ): Promise<IBookDocument | null> => {
+  // Check for unknown fields
+  const allowedFields = [
+    "title",
+    "author",
+    "genre",
+    "isbn",
+    "description",
+    "copies",
+    "available",
+  ];
+  const unknownFields = Object.keys(updateData).filter(
+    (field) => !allowedFields.includes(field)
+  );
+
+  if (unknownFields.length > 0) {
+    const error = new Error(`Unknown fields: ${unknownFields.join(", ")}`);
+    (error as any).name = "ValidationError";
+    (error as any).statusCode = 400;
+    throw error;
+  }
+
   const result = await Book.findByIdAndUpdate(bookId, updateData, {
     new: true,
     runValidators: true,
