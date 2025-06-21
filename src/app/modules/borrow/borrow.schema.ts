@@ -30,6 +30,7 @@ const borrowSchema = new Schema<IBorrowDocument>(
     },
   },
   {
+    versionKey: false,
     timestamps: true,
   }
 );

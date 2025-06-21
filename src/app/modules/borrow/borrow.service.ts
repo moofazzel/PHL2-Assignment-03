@@ -3,6 +3,18 @@ import { IBorrow, IBorrowDocument } from "./borrow.interface";
 import { Borrow } from "./borrow.schema";
 
 const borrowBook = async (borrowData: IBorrow): Promise<IBorrowDocument> => {
+  // Validate quantity is positive
+  if (borrowData.quantity <= 0) {
+    const error = new Error("Quantity must be a positive number");
+    (error as any).name = "ValidationError";
+    (error as any).statusCode = 400;
+    (error as any).details = {
+      quantity: borrowData.quantity,
+      message: "Quantity must be greater than 0",
+    };
+    throw error;
+  }
+
   const book = await Book.findById(borrowData.book);
   if (!book) {
     const error = new Error("Book not found");
