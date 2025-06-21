@@ -1,80 +1,154 @@
 # 📚 Library Management API
 
-A comprehensive Library Management System built with Express, TypeScript, and MongoDB using Mongoose.
+A robust and scalable Library Management System built with **Express.js**, **TypeScript**, and **MongoDB** using Mongoose ODM. This API provides comprehensive book management and borrowing functionality with advanced features like aggregation pipelines, business logic enforcement, and real-time availability tracking.
 
-## 🎯 Features
+## ✨ Features
 
-- **Complete CRUD Operations** for books
-- **Advanced Filtering & Sorting** capabilities
-- **Business Logic Enforcement** for book borrowing
-- **MongoDB Aggregation Pipeline** for analytics
-- **Mongoose Middleware** (pre/post hooks)
-- **Static & Instance Methods** implementation
-- **Schema Validation** with custom validators
-- **Error Handling** with standardized responses
-- **Security Features** (Helmet, CORS, Rate Limiting)
+### 🎯 Core Functionality
+
+- **Complete CRUD Operations** for books with validation
+- **Advanced Book Borrowing System** with business logic enforcement
+- **Real-time Availability Tracking** with automatic updates
+- **Comprehensive Error Handling** with standardized responses
+
+### 🔍 Advanced Features
+
+- **Smart Filtering & Sorting** by genre, date, and custom fields
+- **MongoDB Aggregation Pipeline** for analytics and reporting
+- **Mongoose Middleware** (pre/post hooks) for data integrity
+- **Static & Instance Methods** for custom business logic
+- **Schema Validation** with custom validators and constraints
+
+### 🛡️ Security & Performance
+
+- **Input Validation** with comprehensive error messages
+- **Rate Limiting** to prevent abuse
+- **CORS Configuration** for cross-origin requests
+- **TypeScript** for type safety and better development experience
+
+## 🏗️ Architecture
+
+```
+src/
+├── app.ts                    # Express application setup
+├── server.ts                 # Server startup & database connection
+├── index.ts                  # Application entry point
+└── app/
+    ├── config/
+    │   └── config.ts         # Environment configuration
+    ├── errors/
+    │   ├── ApiError.ts       # Custom error class
+    │   ├── pathNotFoundErrorHandler.ts
+    │   └── validationError.ts
+    ├── middlewares/
+    │   └── globalErrorHandler.ts
+    ├── modules/
+    │   ├── books/            # Book module
+    │   │   ├── books.constant.ts
+    │   │   ├── books.controller.ts
+    │   │   ├── books.interface.ts
+    │   │   ├── books.router.ts
+    │   │   ├── books.schema.ts
+    │   │   └── books.service.ts
+    │   └── borrow/           # Borrow module
+    │       ├── borrow.controller.ts
+    │       ├── borrow.interface.ts
+    │       ├── borrow.router.ts
+    │       ├── borrow.schema.ts
+    │       └── borrow.service.ts
+    ├── routers/
+    │   └── router.ts         # Main router configuration
+    └── util/
+        ├── catchAsync.ts     # Async error handler
+        └── sendResponse.ts   # Response formatter
+```
 
 ## 🛠️ Tech Stack
 
-- **Runtime**: Node.js with TypeScript
-- **Framework**: Express.js
-- **Database**: MongoDB with Mongoose ODM
-- **Security**: Helmet, CORS, Rate Limiting
-- **Development**: ts-node-dev for hot reloading
+| Technology     | Version | Purpose                       |
+| -------------- | ------- | ----------------------------- |
+| **Node.js**    | 18+     | Runtime environment           |
+| **TypeScript** | 5.3+    | Type-safe JavaScript          |
+| **Express.js** | 4.18+   | Web framework                 |
+| **MongoDB**    | 6.0+    | NoSQL database                |
+| **Mongoose**   | 8.0+    | MongoDB ODM                   |
+| **CORS**       | 2.8+    | Cross-origin resource sharing |
 
 ## 📋 Prerequisites
 
-- Node.js (v16 or higher)
-- MongoDB (local installation or MongoDB Atlas)
-- npm or yarn package manager
+Before you begin, ensure you have the following installed:
 
-## 🚀 Installation & Setup
+- **Node.js** (v18 or higher) - [Download here](https://nodejs.org/)
+- **MongoDB** (local installation or MongoDB Atlas account)
+- **npm** or **yarn** package manager
+- **Git** for version control
 
-1. **Clone the repository**
+## 🚀 Quick Start
 
-   ```bash
-   git clone <repository-url>
-   cd library-management-api
-   ```
+### 1. Clone the Repository
 
-2. **Install dependencies**
+```bash
+git clone <your-repository-url>
+cd library-management-api
+```
 
-   ```bash
-   npm install
-   ```
+### 2. Install Dependencies
 
-3. **Environment Configuration**
+```bash
+npm install
+```
 
-   ```bash
-   # Copy the example environment file
-   cp env.example .env
+### 3. Environment Setup
 
-   # Edit .env with your MongoDB connection string
-   MONGODB_URI=mongodb://localhost:27017/library_management
-   PORT=3000
-   NODE_ENV=development
-   ```
+```bash
+# Copy environment template
+cp env.example .env
 
-4. **Start MongoDB**
+# Edit .env with your configuration
+nano .env
+```
 
-   ```bash
-   # If using local MongoDB
-   mongod
+**Required Environment Variables:**
 
-   # Or use MongoDB Atlas (cloud)
-   # Update MONGODB_URI in .env
-   ```
+```env
+NODE_ENV=development
+PORT=3000
+MONGODB_URI=mongodb://localhost:27017/library_management
+```
 
-5. **Run the application**
+### 4. Database Setup
 
-   ```bash
-   # Development mode (with hot reload)
-   npm run dev
+**Option A: Local MongoDB**
 
-   # Production mode
-   npm run build
-   npm start
-   ```
+```bash
+# Start MongoDB service
+mongod
+
+# Or using Docker
+docker run -d -p 27017:27017 --name mongodb mongo:latest
+```
+
+**Option B: MongoDB Atlas (Recommended)**
+
+1. Create account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Create a new cluster
+3. Get your connection string
+4. Update `MONGODB_URI` in `.env`
+
+### 5. Start Development Server
+
+```bash
+# Development mode with hot reload
+npm run dev
+
+# Or production mode
+npm run build
+npm start
+```
+
+### 6. Verify Installation
+
+Visit `http://localhost:3000` to see the welcome message.
 
 ## 📖 API Documentation
 
@@ -84,15 +158,15 @@ A comprehensive Library Management System built with Express, TypeScript, and Mo
 http://localhost:3000/api
 ```
 
-### 📚 Book Endpoints
+### 📚 Book Management
 
-#### 1. Create Book
+#### Create a New Book
 
 ```http
 POST /api/books
 ```
 
-**Request Body:**
+**Request:**
 
 ```json
 {
@@ -127,58 +201,58 @@ POST /api/books
 }
 ```
 
-#### 2. Get All Books (with filtering & sorting)
+#### Get All Books with Filtering
 
 ```http
-GET /api/books?filter=FANTASY&sortBy=createdAt&sort=desc&limit=5
+GET /api/books?filter=SCIENCE&sortBy=createdAt&sort=desc&limit=10
 ```
 
 **Query Parameters:**
 
-- `filter`: Filter by genre (FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY)
-- `sort`: Sort order (asc/desc)
-- `sortBy`: Sort field (default: createdAt)
-- `limit`: Number of results (default: 10)
+- `filter` - Filter by genre (FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY)
+- `sort` - Sort order (asc/desc)
+- `sortBy` - Sort field (default: createdAt)
+- `limit` - Number of results (default: 10)
 
-#### 3. Get Book by ID
+#### Get Book by ID
 
 ```http
 GET /api/books/:bookId
 ```
 
-#### 4. Update Book
+#### Update Book
 
 ```http
 PUT /api/books/:bookId
 ```
 
-**Request Body:**
+**Request (Partial Update):**
 
 ```json
 {
-  "copies": 50
+  "copies": 10
 }
 ```
 
-#### 5. Delete Book
+#### Delete Book
 
 ```http
 DELETE /api/books/:bookId
 ```
 
-### 📖 Borrow Endpoints
+### 📖 Borrowing System
 
-#### 1. Borrow a Book
+#### Borrow a Book
 
 ```http
 POST /api/borrow
 ```
 
-**Request Body:**
+**Request:**
 
 ```json
 {
-  "book": "64ab3f9e2a4b5c6d7e8f9012",
+  "book": "64f123abc4567890def12345",
   "quantity": 2,
   "dueDate": "2025-07-18T00:00:00.000Z"
 }
@@ -186,13 +260,13 @@ POST /api/borrow
 
 **Business Logic:**
 
-- Validates book exists
-- Checks available copies
-- Deducts quantity from book copies
-- Updates book availability if copies become 0
-- Creates borrow record
+- ✅ Validates book existence
+- ✅ Checks available copies
+- ✅ Deducts quantity from book copies
+- ✅ Updates book availability automatically
+- ✅ Creates borrow record with due date
 
-#### 2. Get Borrowed Books Summary (Aggregation)
+#### Get Borrowed Books Summary
 
 ```http
 GET /api/borrow
@@ -216,116 +290,86 @@ GET /api/borrow
 }
 ```
 
-## 🏗️ Project Structure
-
-```
-src/
-├── config/
-│   └── database.ts          # MongoDB connection
-├── controllers/
-│   ├── bookController.ts    # Book CRUD operations
-│   └── borrowController.ts  # Borrow operations
-├── middleware/
-│   └── errorHandler.ts      # Error handling middleware
-├── models/
-│   ├── Book.ts             # Book schema & methods
-│   └── Borrow.ts           # Borrow schema & middleware
-├── routes/
-│   ├── bookRoutes.ts       # Book endpoints
-│   └── borrowRoutes.ts     # Borrow endpoints
-├── types/
-│   └── index.ts            # TypeScript type definitions
-└── index.ts                # Main server file
-```
-
-## 🔧 Key Features Implementation
+## 🔧 Key Features
 
 ### 1. Schema Validation
 
-- **Book Model**: Required fields, enum validation, ISBN format validation
-- **Borrow Model**: Positive quantity, future due date validation
+- **Required Fields**: Title, author, genre, ISBN, copies
+- **Genre Validation**: Only allowed genres accepted
+- **ISBN Format**: 10 or 13 digit validation
+- **Copies Validation**: Non-negative integers only
+- **Due Date**: Must be in the future
 
 ### 2. Business Logic Enforcement
 
-- **Availability Control**: Automatic availability updates based on copies
-- **Copy Deduction**: Pre-save middleware validates and updates book copies
-- **Instance Method**: `updateAvailability()` method on Book model
+- **Automatic Availability Updates**: Books become unavailable when copies reach 0
+- **Copy Deduction**: Real-time updates when books are borrowed
+- **Validation Chain**: Multiple validation layers for data integrity
 
-### 3. Mongoose Middleware
+### 3. Advanced Querying
 
-- **Pre-save**: Updates book availability when copies change
-- **Post-save**: Logs book creation/updates
-- **Borrow Pre-save**: Validates book existence and available copies
+- **Filtering**: By genre, availability, date ranges
+- **Sorting**: By any field in ascending/descending order
+- **Pagination**: Limit results for performance
+- **Aggregation**: Complex analytics using MongoDB pipelines
 
-### 4. Aggregation Pipeline
+### 4. Error Handling
 
-- **Borrowed Books Summary**: Groups by book, sums quantities, joins with book info
-- **Performance**: Indexed fields for optimal query performance
-
-### 5. Static Methods
-
-- **Book.findByGenre()**: Static method to find books by genre
+- **Standardized Responses**: Consistent error format across all endpoints
+- **Detailed Validation Errors**: Specific field-level error messages
+- **HTTP Status Codes**: Proper status codes for different error types
 
 ## 🧪 Testing
 
 ```bash
-# Run tests
+# Run all tests
 npm test
 
 # Run tests in watch mode
 npm run test:watch
-```
 
-## 🔒 Security Features
-
-- **Helmet**: Security headers
-- **CORS**: Cross-origin resource sharing
-- **Rate Limiting**: 100 requests per 15 minutes per IP
-- **Input Validation**: Comprehensive request validation
-- **Error Handling**: Standardized error responses
-
-## 📝 Error Handling
-
-All errors follow a standardized format:
-
-```json
-{
-  "message": "Validation failed",
-  "success": false,
-  "error": {
-    "name": "ValidationError",
-    "errors": {
-      "copies": {
-        "message": "Copies must be a positive number",
-        "name": "ValidatorError",
-        "properties": {
-          "message": "Copies must be a positive number",
-          "type": "min",
-          "min": 0
-        },
-        "kind": "min",
-        "path": "copies",
-        "value": -5
-      }
-    }
-  }
-}
+# Run tests with coverage
+npm run test:coverage
 ```
 
 ## 🚀 Deployment
 
-### Environment Variables
+### Vercel Deployment (Recommended)
+
+1. **Install Vercel CLI**
 
 ```bash
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/library_management
-NODE_ENV=production
+npm i -g vercel
 ```
 
-### Build for Production
+2. **Deploy**
 
 ```bash
+vercel
+```
+
+3. **Set Environment Variables**
+
+- `MONGODB_URI` - Your MongoDB connection string
+- `NODE_ENV` - `production`
+
+### Docker Deployment
+
+```bash
+# Build image
+docker build -t library-api .
+
+# Run container
+docker run -p 3000:3000 -e MONGODB_URI=your_uri library-api
+```
+
+### Traditional Server
+
+```bash
+# Build for production
 npm run build
+
+# Start production server
 npm start
 ```
 
@@ -359,18 +403,79 @@ npm start
 }
 ```
 
+## 🔒 Security Features
+
+- **Input Validation**: Comprehensive request validation
+- **Rate Limiting**: 100 requests per 15 minutes per IP
+- **CORS Protection**: Configurable cross-origin settings
+- **Error Sanitization**: No sensitive data in error responses
+- **Type Safety**: TypeScript prevents runtime errors
+
+## 📝 Error Response Format
+
+All errors follow a standardized format:
+
+```json
+{
+  "message": "Validation failed",
+  "success": false,
+  "error": {
+    "name": "ValidationError",
+    "message": "Book validation failed",
+    "details": {
+      "copies": {
+        "message": "Copies must be a non-negative integer",
+        "value": -5
+      }
+    },
+    "statusCode": 400
+  }
+}
+```
+
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+We welcome contributions! Please follow these steps:
+
+1. **Fork** the repository
+2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
+3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
+4. **Push** to the branch (`git push origin feature/amazing-feature`)
+5. **Open** a Pull Request
+
+### Development Guidelines
+
+- Follow TypeScript best practices
+- Add tests for new features
+- Update documentation
+- Use conventional commit messages
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-For support and questions, please open an issue in the repository.
+### Getting Help
+
+- 📖 **Documentation**: Check this README first
+- 🐛 **Issues**: Report bugs via GitHub Issues
+- 💬 **Discussions**: Use GitHub Discussions for questions
+- 📧 **Email**: Contact maintainers for urgent issues
+
+### Common Issues
+
+- **MongoDB Connection**: Ensure MongoDB is running and connection string is correct
+- **Port Conflicts**: Change PORT in .env if 3000 is occupied
+- **TypeScript Errors**: Run `npm run build` to check for compilation errors
+
+## 🙏 Acknowledgments
+
+- **Express.js** team for the excellent web framework
+- **MongoDB** for the powerful NoSQL database
+- **Mongoose** team for the elegant ODM
+- **TypeScript** team for type safety
+
+---
+
+**Made with ❤️ for the developer community**
