@@ -65,6 +65,11 @@ const bookSchema = new Schema<IBookDocument, IBookModel>(
   }
 );
 
+// Add ObjectId validation for bookId parameter
+bookSchema.statics.validateObjectId = function (id: string): boolean {
+  return mongoose.Types.ObjectId.isValid(id);
+};
+
 bookSchema.methods.updateAvailability = async function (): Promise<void> {
   this.available = this.copies > 0;
   await this.save();

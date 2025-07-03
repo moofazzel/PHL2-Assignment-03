@@ -1,3 +1,4 @@
+import ApiError from "../../errors/ApiError";
 import { Book } from "../books/books.schema";
 import { IBorrow, IBorrowDocument } from "./borrow.interface";
 import { Borrow } from "./borrow.schema";
@@ -5,35 +6,24 @@ import { Borrow } from "./borrow.schema";
 const borrowBook = async (borrowData: IBorrow): Promise<IBorrowDocument> => {
   // Validate quantity is positive
   if (borrowData.quantity <= 0) {
-    const error = new Error("Quantity must be a positive number");
-    (error as any).name = "ValidationError";
-    (error as any).statusCode = 400;
-    (error as any).details = {
-      quantity: borrowData.quantity,
-      message: "Quantity must be greater than 0",
-    };
-    throw error;
+    throw new ApiError(400, "Quantity must be a positive number");
+  }
+
+  // Validate ObjectId format
+  if (!require("mongoose").Types.ObjectId.isValid(borrowData.book)) {
+    throw new ApiError(400, "Invalid book ID format");
   }
 
   const book = await Book.findById(borrowData.book);
   if (!book) {
-    const error = new Error("Book not found");
-    (error as any).name = "BookNotFoundError";
-    (error as any).statusCode = 404;
-    throw error;
+    throw new ApiError(404, "Book not found");
   }
 
   if (book.copies < borrowData.quantity) {
-    const error = new Error(
+    throw new ApiError(
+      400,
       `Not enough copies available. Available: ${book.copies}, Requested: ${borrowData.quantity}`
     );
-    (error as any).name = "InsufficientCopiesError";
-    (error as any).statusCode = 400;
-    (error as any).details = {
-      available: book.copies,
-      requested: borrowData.quantity,
-    };
-    throw error;
   }
 
   const result = await Borrow.create(borrowData);

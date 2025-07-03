@@ -24,4 +24,5 @@ export interface IBookDocument extends IBook, Document {
 
 export interface IBookModel extends Model<IBookDocument> {
   findByGenre(genre: BookGenre): Promise<IBookDocument[]>;
+  validateObjectId(id: string): boolean;
 }

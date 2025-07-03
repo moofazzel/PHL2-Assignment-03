@@ -1,6 +1,8 @@
 /* eslint-disable no-unused-vars */
 import { ErrorRequestHandler } from "express";
+import mongoose from "mongoose";
 import ApiError from "../errors/ApiError";
+import handleValidationError from "../errors/validationError";
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   let statusCode = 500;
@@ -8,19 +10,50 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   let errorData: any = error;
 
   if (error?.name === "ValidationError") {
-    statusCode = 400;
-    message = "Validation failed";
+    const validationError = handleValidationError(
+      error as mongoose.Error.ValidationError
+    );
+    statusCode = validationError.statusCode;
+    message = validationError.message;
     errorData = {
       name: "ValidationError",
-      errors: error.errors,
+      message: validationError.message,
+      details: validationError.errorMessages,
+      statusCode: validationError.statusCode,
+    };
+  } else if (error?.name === "CastError") {
+    statusCode = 400;
+    message = "Invalid ID format";
+    errorData = {
+      name: "CastError",
+      message: "Invalid ID format",
+      details: { path: error.path, value: error.value },
+      statusCode: 400,
+    };
+  } else if (error?.code === 11000) {
+    statusCode = 409;
+    message = "Duplicate field value";
+    errorData = {
+      name: "DuplicateError",
+      message: "Duplicate field value",
+      details: { field: Object.keys(error.keyValue)[0] },
+      statusCode: 409,
     };
   } else if (error instanceof ApiError) {
     statusCode = error?.statusCode;
     message = error.message;
-    errorData = error;
+    errorData = {
+      name: error.name || "ApiError",
+      message: error.message,
+      statusCode: error.statusCode,
+    };
   } else if (error instanceof Error) {
     message = error?.message;
-    errorData = error;
+    errorData = {
+      name: error.name || "Error",
+      message: error.message,
+      statusCode: 500,
+    };
   }
 
   res.status(statusCode).json({

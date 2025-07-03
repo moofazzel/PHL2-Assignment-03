@@ -1,3 +1,4 @@
+import ApiError from "../../errors/ApiError";
 import { IBook, IBookDocument } from "./books.interface";
 import { Book } from "./books.schema";
 
@@ -24,6 +25,9 @@ const getAllBooks = async (
 };
 
 const getBookById = async (bookId: string): Promise<IBookDocument | null> => {
+  if (!Book.validateObjectId(bookId)) {
+    throw new ApiError(400, "Invalid book ID format");
+  }
   const result = await Book.findById(bookId);
   return result;
 };
@@ -32,6 +36,10 @@ const updateBook = async (
   bookId: string,
   updateData: Partial<IBook>
 ): Promise<IBookDocument | null> => {
+  if (!Book.validateObjectId(bookId)) {
+    throw new ApiError(400, "Invalid book ID format");
+  }
+
   // Check for unknown fields
   const allowedFields = [
     "title",
@@ -47,10 +55,7 @@ const updateBook = async (
   );
 
   if (unknownFields.length > 0) {
-    const error = new Error(`Unknown fields: ${unknownFields.join(", ")}`);
-    (error as any).name = "ValidationError";
-    (error as any).statusCode = 400;
-    throw error;
+    throw new ApiError(400, `Unknown fields: ${unknownFields.join(", ")}`);
   }
 
   const result = await Book.findByIdAndUpdate(bookId, updateData, {
@@ -61,6 +66,9 @@ const updateBook = async (
 };
 
 const deleteBook = async (bookId: string): Promise<IBookDocument | null> => {
+  if (!Book.validateObjectId(bookId)) {
+    throw new ApiError(400, "Invalid book ID format");
+  }
   const result = await Book.findByIdAndDelete(bookId);
   return result;
 };
