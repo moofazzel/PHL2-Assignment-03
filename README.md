@@ -1,15 +1,26 @@
-# 📚 Library Management API
+# �� Library Management System API
 
-A robust and scalable Library Management System built with **Express.js**, **TypeScript**, and **MongoDB** using Mongoose ODM. This API provides comprehensive book management and borrowing functionality with advanced features like aggregation pipelines, business logic enforcement, and real-time availability tracking.
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
+[![Express](https://img.shields.io/badge/Express-4.18+-black.svg)](https://expressjs.com/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-6.0+-green.svg)](https://www.mongodb.com/)
+[![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Available-brightgreen.svg)](https://minimal-library-management-system.vercel.app/)
 
-## ✨ Features
+A robust and scalable **Library Management System API** built with **Express.js**, **TypeScript**, and **MongoDB**. This RESTful API provides comprehensive book management and borrowing functionality with advanced features like real-time availability tracking, business logic enforcement, and comprehensive error handling.
+
+## 🌟 Live Demo
+
+**🔗 API Base URL:** [https://minimal-library-management-system.vercel.app/](https://minimal-library-management-system.vercel.app/)
+
+## ✨ Key Features
 
 ### 🎯 Core Functionality
 
-- **Complete CRUD Operations** for books with validation
+- **Complete CRUD Operations** for books with comprehensive validation
 - **Advanced Book Borrowing System** with business logic enforcement
 - **Real-time Availability Tracking** with automatic updates
-- **Comprehensive Error Handling** with standardized responses
+- **Comprehensive Error Handling** with standardized API responses
 
 ### 🔍 Advanced Features
 
@@ -22,17 +33,17 @@ A robust and scalable Library Management System built with **Express.js**, **Typ
 ### 🛡️ Security & Performance
 
 - **Input Validation** with comprehensive error messages
-- **Rate Limiting** to prevent abuse
+- **Rate Limiting** to prevent API abuse
 - **CORS Configuration** for cross-origin requests
-- **TypeScript** for type safety and better development experience
+- **TypeScript** for type safety and enhanced development experience
+- **Helmet.js** for security headers
 
-## 🏗️ Architecture
+## 🏗️ Project Architecture
 
 ```
 src/
 ├── app.ts                    # Express application setup
 ├── server.ts                 # Server startup & database connection
-├── index.ts                  # Application entry point
 └── app/
     ├── config/
     │   └── config.ts         # Environment configuration
@@ -43,14 +54,14 @@ src/
     ├── middlewares/
     │   └── globalErrorHandler.ts
     ├── modules/
-    │   ├── books/            # Book module
+    │   ├── books/            # Book management module
     │   │   ├── books.constant.ts
     │   │   ├── books.controller.ts
     │   │   ├── books.interface.ts
     │   │   ├── books.router.ts
     │   │   ├── books.schema.ts
     │   │   └── books.service.ts
-    │   └── borrow/           # Borrow module
+    │   └── borrow/           # Borrowing module
     │       ├── borrow.controller.ts
     │       ├── borrow.interface.ts
     │       ├── borrow.router.ts
@@ -63,7 +74,7 @@ src/
         └── sendResponse.ts   # Response formatter
 ```
 
-## 🛠️ Tech Stack
+## 🛠️ Technology Stack
 
 | Technology     | Version | Purpose                       |
 | -------------- | ------- | ----------------------------- |
@@ -73,6 +84,8 @@ src/
 | **MongoDB**    | 6.0+    | NoSQL database                |
 | **Mongoose**   | 8.0+    | MongoDB ODM                   |
 | **CORS**       | 2.8+    | Cross-origin resource sharing |
+| **Helmet**     | 7.1+    | Security headers              |
+| **Rate Limit** | 7.1+    | API rate limiting             |
 
 ## 📋 Prerequisites
 
@@ -155,10 +168,10 @@ Visit `http://localhost:3000` to see the welcome message.
 ### Base URL
 
 ```
-http://localhost:3000/api
+https://minimal-library-management-system.vercel.app/api
 ```
 
-### 📚 Book Management
+### 📚 Book Management Endpoints
 
 #### Create a New Book
 
@@ -166,7 +179,7 @@ http://localhost:3000/api
 POST /api/books
 ```
 
-**Request:**
+**Request Body:**
 
 ```json
 {
@@ -175,43 +188,22 @@ POST /api/books
   "genre": "SCIENCE",
   "isbn": "9780553380163",
   "description": "An overview of cosmology and black holes.",
-  "copies": 5,
-  "available": true
+  "copies": 5
 }
 ```
 
-**Response:**
-
-```json
-{
-  "success": true,
-  "message": "Book created successfully",
-  "data": {
-    "_id": "64f123abc4567890def12345",
-    "title": "The Theory of Everything",
-    "author": "Stephen Hawking",
-    "genre": "SCIENCE",
-    "isbn": "9780553380163",
-    "description": "An overview of cosmology and black holes.",
-    "copies": 5,
-    "available": true,
-    "createdAt": "2024-11-19T10:23:45.123Z",
-    "updatedAt": "2024-11-19T10:23:45.123Z"
-  }
-}
-```
-
-#### Get All Books with Filtering
+#### Get All Books
 
 ```http
-GET /api/books?filter=SCIENCE&sortBy=createdAt&sort=desc&limit=10
+GET /api/books
+GET /api/books?filter=SCIENCE&sort=desc&limit=5
 ```
 
 **Query Parameters:**
 
-- `filter` - Filter by genre (FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY)
-- `sort` - Sort order (asc/desc)
-- `sortBy` - Sort field (default: createdAt)
+- `filter` - Filter by genre
+- `sort` - `asc` or `desc`
+- `sortBy` - Field to sort by (default: `createdAt`)
 - `limit` - Number of results (default: 10)
 
 #### Get Book by ID
@@ -226,21 +218,13 @@ GET /api/books/:bookId
 PUT /api/books/:bookId
 ```
 
-**Request (Partial Update):**
-
-```json
-{
-  "copies": 10
-}
-```
-
 #### Delete Book
 
 ```http
 DELETE /api/books/:bookId
 ```
 
-### 📖 Borrowing System
+### 📚 Borrowing Endpoints
 
 #### Borrow a Book
 
@@ -248,23 +232,15 @@ DELETE /api/books/:bookId
 POST /api/borrow
 ```
 
-**Request:**
+**Request Body:**
 
 ```json
 {
   "book": "64f123abc4567890def12345",
   "quantity": 2,
-  "dueDate": "2025-07-18T00:00:00.000Z"
+  "dueDate": "2025-01-15T00:00:00.000Z"
 }
 ```
-
-**Business Logic:**
-
-- ✅ Validates book existence
-- ✅ Checks available copies
-- ✅ Deducts quantity from book copies
-- ✅ Updates book availability automatically
-- ✅ Creates borrow record with due date
 
 #### Get Borrowed Books Summary
 
@@ -272,210 +248,93 @@ POST /api/borrow
 GET /api/borrow
 ```
 
-**Response:**
+### 🎯 Available Genres
 
-```json
-{
-  "success": true,
-  "message": "Borrowed books summary retrieved successfully",
-  "data": [
-    {
-      "book": {
-        "title": "The Theory of Everything",
-        "isbn": "9780553380163"
-      },
-      "totalQuantity": 5
-    }
-  ]
-}
-```
-
-## 🔧 Key Features
-
-### 1. Schema Validation
-
-- **Required Fields**: Title, author, genre, ISBN, copies
-- **Genre Validation**: Only allowed genres accepted
-- **ISBN Format**: 10 or 13 digit validation
-- **Copies Validation**: Non-negative integers only
-- **Due Date**: Must be in the future
-
-### 2. Business Logic Enforcement
-
-- **Automatic Availability Updates**: Books become unavailable when copies reach 0
-- **Copy Deduction**: Real-time updates when books are borrowed
-- **Validation Chain**: Multiple validation layers for data integrity
-
-### 3. Advanced Querying
-
-- **Filtering**: By genre, availability, date ranges
-- **Sorting**: By any field in ascending/descending order
-- **Pagination**: Limit results for performance
-- **Aggregation**: Complex analytics using MongoDB pipelines
-
-### 4. Error Handling
-
-- **Standardized Responses**: Consistent error format across all endpoints
-- **Detailed Validation Errors**: Specific field-level error messages
-- **HTTP Status Codes**: Proper status codes for different error types
+- `FICTION`
+- `NON_FICTION`
+- `SCIENCE`
+- `HISTORY`
+- `BIOGRAPHY`
+- `FANTASY`
 
 ## 🧪 Testing
 
 ```bash
-# Run all tests
+# Run tests
 npm test
 
 # Run tests in watch mode
 npm run test:watch
-
-# Run tests with coverage
-npm run test:coverage
 ```
+
+## 📦 Available Scripts
+
+| Script               | Description                              |
+| -------------------- | ---------------------------------------- |
+| `npm run dev`        | Start development server with hot reload |
+| `npm run build`      | Build the project for production         |
+| `npm start`          | Start production server                  |
+| `npm test`           | Run test suite                           |
+| `npm run test:watch` | Run tests in watch mode                  |
+
+## 🔧 Development
+
+### Code Structure
+
+The project follows a modular architecture with clear separation of concerns:
+
+- **Controllers**: Handle HTTP requests and responses
+- **Services**: Contain business logic
+- **Models**: Define data schemas and validation
+- **Routes**: Define API endpoints
+- **Middleware**: Handle cross-cutting concerns
+
+### Error Handling
+
+The API implements comprehensive error handling with:
+
+- Custom error classes
+- Global error handler middleware
+- Standardized error responses
+- Input validation with detailed error messages
 
 ## 🚀 Deployment
 
-### Vercel Deployment (Recommended)
+This project is deployed on **Vercel** and is accessible at:
+[https://minimal-library-management-system.vercel.app/](https://minimal-library-management-system.vercel.app/)
 
-1. **Install Vercel CLI**
+### Deployment Steps
 
-```bash
-npm i -g vercel
-```
-
-2. **Deploy**
-
-```bash
-vercel
-```
-
-3. **Set Environment Variables**
-
-- `MONGODB_URI` - Your MongoDB connection string
-- `NODE_ENV` - `production`
-
-### Docker Deployment
-
-```bash
-# Build image
-docker build -t library-api .
-
-# Run container
-docker run -p 3000:3000 -e MONGODB_URI=your_uri library-api
-```
-
-### Traditional Server
-
-```bash
-# Build for production
-npm run build
-
-# Start production server
-npm start
-```
-
-## 📊 Database Schema
-
-### Book Collection
-
-```javascript
-{
-  title: String (required, max 200 chars),
-  author: String (required, max 100 chars),
-  genre: String (enum: FICTION, NON_FICTION, SCIENCE, HISTORY, BIOGRAPHY, FANTASY),
-  isbn: String (required, unique, validated),
-  description: String (optional, max 1000 chars),
-  copies: Number (required, min 0, integer),
-  available: Boolean (default: true),
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-### Borrow Collection
-
-```javascript
-{
-  book: ObjectId (ref: Book, required),
-  quantity: Number (required, min 1, integer),
-  dueDate: Date (required, future date),
-  createdAt: Date,
-  updatedAt: Date
-}
-```
-
-## 🔒 Security Features
-
-- **Input Validation**: Comprehensive request validation
-- **Rate Limiting**: 100 requests per 15 minutes per IP
-- **CORS Protection**: Configurable cross-origin settings
-- **Error Sanitization**: No sensitive data in error responses
-- **Type Safety**: TypeScript prevents runtime errors
-
-## 📝 Error Response Format
-
-All errors follow a standardized format:
-
-```json
-{
-  "message": "Validation failed",
-  "success": false,
-  "error": {
-    "name": "ValidationError",
-    "message": "Book validation failed",
-    "details": {
-      "copies": {
-        "message": "Copies must be a non-negative integer",
-        "value": -5
-      }
-    },
-    "statusCode": 400
-  }
-}
-```
+1. Connect your GitHub repository to Vercel
+2. Configure environment variables in Vercel dashboard
+3. Deploy automatically on push to main branch
 
 ## 🤝 Contributing
 
-We welcome contributions! Please follow these steps:
-
-1. **Fork** the repository
-2. **Create** a feature branch (`git checkout -b feature/amazing-feature`)
-3. **Commit** your changes (`git commit -m 'Add amazing feature'`)
-4. **Push** to the branch (`git push origin feature/amazing-feature`)
-5. **Open** a Pull Request
-
-### Development Guidelines
-
-- Follow TypeScript best practices
-- Add tests for new features
-- Update documentation
-- Use conventional commit messages
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## 🆘 Support
+## 👨‍💻 Author
 
-### Getting Help
+**Your Name**
 
-- 📖 **Documentation**: Check this README first
-- 🐛 **Issues**: Report bugs via GitHub Issues
-- 💬 **Discussions**: Use GitHub Discussions for questions
-- 📧 **Email**: Contact maintainers for urgent issues
-
-### Common Issues
-
-- **MongoDB Connection**: Ensure MongoDB is running and connection string is correct
-- **Port Conflicts**: Change PORT in .env if 3000 is occupied
-- **TypeScript Errors**: Run `npm run build` to check for compilation errors
+- GitHub: [@yourusername](https://github.com/yourusername)
+- LinkedIn: [Your LinkedIn](https://linkedin.com/in/yourprofile)
 
 ## 🙏 Acknowledgments
 
-- **Express.js** team for the excellent web framework
-- **MongoDB** for the powerful NoSQL database
-- **Mongoose** team for the elegant ODM
-- **TypeScript** team for type safety
+- Express.js team for the excellent web framework
+- MongoDB team for the powerful database
+- TypeScript team for type safety
+- Vercel for seamless deployment
 
 ---
 
-**Made with ❤️ for the developer community**
+⭐ **Star this repository if you find it helpful!**
