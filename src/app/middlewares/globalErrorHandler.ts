@@ -32,11 +32,22 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     };
   } else if (error?.code === 11000) {
     statusCode = 409;
-    message = "Duplicate field value";
+    const duplicateField = Object.keys(error.keyValue)[0];
+    message =
+      duplicateField === "isbn"
+        ? "ISBN already exists"
+        : "Duplicate field value";
     errorData = {
       name: "DuplicateError",
-      message: "Duplicate field value",
-      details: { field: Object.keys(error.keyValue)[0] },
+      message: message,
+      details: {
+        field: duplicateField,
+        value: error.keyValue[duplicateField],
+        help:
+          duplicateField === "isbn"
+            ? "Each book must have a unique ISBN. Please check if this book is already in the system."
+            : undefined,
+      },
       statusCode: 409,
     };
   } else if (error instanceof ApiError) {

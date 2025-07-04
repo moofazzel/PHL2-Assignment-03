@@ -30,12 +30,24 @@ const bookSchema = new Schema<IBookDocument, IBookModel>(
       required: [true, "ISBN is required"],
       unique: true,
       trim: true,
-      validate: {
-        validator: function (v: string) {
-          return /^(?:\d{10}|\d{13})$/.test(v.replace(/[-\s]/g, ""));
+      validate: [
+        {
+          validator: function (v: string) {
+            // Remove any hyphens or spaces
+            const cleanIsbn = v.replace(/[-\s]/g, "");
+            return /^(?:\d{10}|\d{13})$/.test(cleanIsbn);
+          },
+          message:
+            "ISBN must be exactly 10 or 13 digits (hyphens and spaces allowed)",
         },
-        message: "ISBN must be a valid 10 or 13 digit number",
-      },
+        {
+          validator: function (v: string) {
+            // Check for valid characters
+            return /^[\d\-\s]+$/.test(v);
+          },
+          message: "ISBN can only contain numbers, hyphens, and spaces",
+        },
+      ],
     },
     description: {
       type: String,
